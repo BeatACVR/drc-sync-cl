@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wii U Gamepad Checklist</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2em;
+        }
+        .checkbox-container {
+            margin: 5px 0;
+        }
+        .checkbox-container label {
+            white-space: nowrap;
+            font-size: 3em; /* Increased from 1.5em to 3em */
+        }
+        button {
+            margin-top: 10px;
+            padding: 20px 30px; /* Increased padding for a larger button */
+            font-size: 2.4em; /* Increased from 1.2em to 2.4em */
+        }
+        .reset-info {
+            font-size: 2em; /* Increased from 1em to 2em */
+            margin-top: 5px;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <h1>Wii U Gamepad Checklist</h1>
+    <div class="reset-info">Click 5 times to uncheck all</div>
+    <button id="resetButton">Reset Checkboxes</button>
+    <form id="combinationsForm">
+        <script>
+            const suits = ['♠', '♦', '♥', '♣'];
+            const form = document.getElementById('combinationsForm');
+            let resetClickCount = 0;
+
+            function saveCheckboxStates() {
+                const checkboxes = form.querySelectorAll('input[type="checkbox"]');
+                checkboxes.forEach(checkbox => {
+                    localStorage.setItem(checkbox.value, checkbox.checked);
+                });
+            }
+
+            function loadCheckboxStates() {
+                const checkboxes = form.querySelectorAll('input[type="checkbox"]');
+                checkboxes.forEach(checkbox => {
+                    const isChecked = localStorage.getItem(checkbox.value) === 'true';
+                    checkbox.checked = isChecked;
+                });
+            }
+
+            for (let i = 0; i < suits.length; i++) {
+                for (let j = 0; j < suits.length; j++) {
+                    for (let k = 0; k < suits.length; k++) {
+                        for (let l = 0; l < suits.length; l++) {
+                            const combination = `${suits[i]}${suits[j]}${suits[k]}${suits[l]}`;
+                            const checkboxContainer = document.createElement('div');
+                            checkboxContainer.classList.add('checkbox-container');
+                            checkboxContainer.innerHTML = `<label><input type="checkbox" name="combination" value="${combination}" style="transform: scale(2);"> ${combination}</label>`;
+                            form.appendChild(checkboxContainer);
+                        }
+                    }
+                }
+            }
+
+            window.onload = loadCheckboxStates;
+
+            form.addEventListener('change', saveCheckboxStates);
+
+            const resetButton = document.getElementById('resetButton');
+
+            resetButton.addEventListener('click', () => {
+                resetClickCount++;
+                if (resetClickCount === 5) {
+                    const checkboxes = form.querySelectorAll('input[type="checkbox"]');
+                    checkboxes.forEach(checkbox => {
+                        checkbox.checked = false;
+                        localStorage.setItem(checkbox.value, false);
+                    });
+                    resetClickCount = 0;
+                }
+            });
+        </script>
+    </form>
+</body>
+</html>
